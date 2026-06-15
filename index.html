@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Harvard CV Studio | ATS-Optimized Markdown Exporter</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..700;1,400..700&family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Marked.js Markdown Parser -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar Controls -->
+    <aside class="sidebar">
+      <div class="logo-area">
+        <i data-lucide="graduation-cap" class="logo-icon"></i>
+        <div>
+          <h1>Harvard CV Studio   </h1>
+          <p class="subtitle">ATS Optimizer & PDF Exporter</p>
+          <p class="subtitle">linkedin.com/in/enriqueambrosio</p>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="control-group">
+        <label class="group-title">Documento</label>
+        <div class="button-grid">
+          <button id="btn-import" class="btn btn-secondary">
+            <i data-lucide="file-up"></i> Cargar MD
+          </button>
+          <input type="file" id="file-input" accept=".md,.txt" style="display: none;">
+          <button id="btn-export-md" class="btn btn-secondary">
+            <i data-lucide="download"></i> Guardar MD
+          </button>
+        </div>
+        <button id="btn-print" class="btn btn-primary btn-block">
+          <i data-lucide="file-text"></i> Exportar a PDF
+        </button>
+      </div>
+
+      <!-- Formatting Customization -->
+      <div class="control-group">
+        <label class="group-title">Ajustes Harvard</label>
+        
+        <div class="control-item">
+          <div class="control-label">
+            <span>Tipografía</span>
+            <span id="font-val">EB Garamond (Serif)</span>
+          </div>
+          <select id="select-font" class="form-select">
+            <option value="font-garamond">Harvard Classic (EB Garamond)</option>
+            <option value="font-inter">Harvard Modern (Inter)</option>
+            <option value="font-system">Harvard Executive (Georgia / Times)</option>
+            <option value="font-sans">Harvard Tech (Arial / Helvetica)</option>
+          </select>
+        </div>
+
+        <div class="control-item">
+          <div class="control-label">
+            <span>Tamaño de Letra</span>
+            <span id="fontSize-val">10.5 pt</span>
+          </div>
+          <input type="range" id="slider-fontSize" min="9" max="12" step="0.5" value="10.5" class="slider">
+        </div>
+
+        <div class="control-item">
+          <div class="control-label">
+            <span>Márgenes</span>
+            <span id="margins-val">0.75 in</span>
+          </div>
+          <input type="range" id="slider-margins" min="0.4" max="1.0" step="0.05" value="0.75" class="slider">
+        </div>
+
+        <div class="control-item">
+          <div class="control-label">
+            <span>Espaciado de Línea</span>
+            <span id="lineHeight-val">1.2</span>
+          </div>
+          <input type="range" id="slider-lineHeight" min="1.0" max="1.5" step="0.05" value="1.2" class="slider">
+        </div>
+
+        <div class="control-item">
+          <div class="control-label">
+            <span>Espaciado de Sección</span>
+            <span id="sectionSpace-val">14 px</span>
+          </div>
+          <input type="range" id="slider-sectionSpace" min="8" max="24" step="1" value="14" class="slider">
+        </div>
+        
+        <div class="control-item checkbox-item">
+          <input type="checkbox" id="check-pagebreaks" checked>
+          <label for="check-pagebreaks">Mostrar cortes de página (Letter)</label>
+        </div>
+      </div>
+
+      <!-- ATS Score Widget -->
+      <div class="control-group">
+        <label class="group-title">Analizador ATS</label>
+        <div class="ats-score-container">
+          <div class="ats-circle-wrapper">
+            <svg class="ats-circle" viewBox="0 0 36 36">
+              <path class="ats-circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+              <path class="ats-circle-bar" id="score-bar" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            </svg>
+            <div class="ats-score-text">
+              <span id="ats-score-num">0%</span>
+              <span class="label">ATS Score</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ATS Checklist -->
+        <ul class="ats-checklist" id="ats-checklist">
+          <!-- Populated by JavaScript -->
+        </ul>
+      </div>
+
+      <!-- Author Credit -->
+      <a href="https://portafolio-web-enriqueaq.vercel.app/" target="_blank" rel="noopener noreferrer" class="author-badge">
+        <i data-lucide="external-link"></i> Desarrollado por Enrique AQ
+      </a>
+
+      <!-- Doodle Illustration -->
+      <div class="sidebar-doodle-wrapper">
+        <img src="cv_designer_doodle.png" alt="Diseñador de CV Doodle" class="sidebar-doodle">
+      </div>
+    </aside>
+
+    <!-- Main Workspace -->
+    <main class="workspace">
+      <!-- Editor Column -->
+      <section class="editor-pane">
+        <div class="pane-header">
+          <div class="title-with-status">
+            <i data-lucide="edit-3"></i>
+            <h2>Editor Markdown</h2>
+          </div>
+          <span class="word-counter" id="word-count">0 palabras</span>
+        </div>
+        <div class="editor-wrapper">
+          <textarea id="markdown-editor" spellcheck="false" placeholder="Escribe o pega tu CV aquí en formato Markdown..."></textarea>
+        </div>
+      </section>
+
+      <!-- Preview Column -->
+      <section class="preview-pane">
+        <div class="pane-header">
+          <div class="title-with-status">
+            <i data-lucide="eye"></i>
+            <h2>Vista Previa PDF (Carta)</h2>
+          </div>
+          <button id="btn-toggle-preview-only" class="btn-icon-toggle" title="Pantalla completa">
+            <i data-lucide="expand"></i>
+          </button>
+        </div>
+        
+        <div class="preview-scroll-container">
+          <!-- Virtual Sheet of Paper -->
+          <div class="paper-container">
+            <div class="cv-preview font-garamond" id="cv-preview">
+              <!-- Content rendered here by marked.js + app.js -->
+            </div>
+            <!-- Dynamic Page Break Indicators -->
+            <div class="page-break-indicator" id="page-break-line-1" style="display: none;">
+              <span>Fin de Página 1</span>
+            </div>
+            <div class="page-break-indicator" id="page-break-line-2" style="display: none;">
+              <span>Fin de Página 2</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Embed original Optimized Markdown as default content -->
+  <textarea id="default-markdown-content" style="display: none;"># JOSE ENRIQUE AMBROSIO QUISPE
+
+**Teléfono:** +51 931 127 537 | **Correo:** [enriqueaq718@gmail.com](mailto:enriqueaq718@gmail.com) | **LinkedIn:** [linkedin.com/in/enriqueambrosio](https://www.linkedin.com/in/enriqueambrosio) | **Portafolio:** [portafolio-web-enriqueaq.vercel.app](https://portafolio-web-enriqueaq.vercel.app/)
+
+---
+
+# Perfil Profesional
+
+Ingeniero de Sistemas de la Universidad Nacional Mayor de San Marcos, especializado en analítica inferencial, causalidad aplicada y soluciones avanzadas de Business Intelligence. Cuento con experiencia en **Business Intelligence, Data Analytics, Data Engineering, Revenue Management y Pricing Analytics**, gestionando grandes volúmenes de datos y transformándolos en insights estratégicos para la toma de decisiones.
+
+Además, me desempeño como docente principal de especialidad en **Fintech y Banca Digital impulsada por Inteligencia Artificial**, integrando conocimientos de pagos digitales, ecosistemas financieros, inteligencia artificial aplicada, gobierno de datos y transformación digital.
+
+Me caracterizo por mi liderazgo, pensamiento analítico, orientación a resultados y capacidad para desarrollar soluciones rápidas y efectivas en entornos exigentes, conectando la visión técnica con las necesidades reales del negocio.
+
+---
+
+# Experiencia Laboral
+
+## Subgerente Adjunto de Business Intelligence & Revenue Management
+**Yape - BCP** | *Junio 2026 – Actualidad* | *Lima, Perú*
+- Elaboré el **business case de ingresos** del principal producto de recaudación P2M de Yape, contribuyendo a la evaluación estratégica de oportunidades de monetización y crecimiento.
+- Participé de primera mano en iniciativas conjuntas con un impacto estimado de **US$ 1.2M**, articulando análisis de negocio, revenue management y toma de decisiones basada en datos.
+- Lidero el frente de **Business Intelligence enfocado en Pricing Analytics** para múltiples verticales de negocio, incluyendo Lending, Commerce, Remesas y Payments.
+- Desarrollo insights ejecutivos y presentaciones con enfoque de **data storytelling** para líderes de negocio, producto y gerencia.
+- Implemento modelos analíticos y de Machine Learning orientados a la evaluación de impacto, causalidad y optimización de decisiones comerciales.
+- Aplico inteligencia artificial generativa para automatizar procesos de reportería, documentación, análisis exploratorio y transferencia de información entre equipos.
+- Utilizo algoritmos estadísticos, técnicas inferenciales y modelos causales para sustentar hallazgos, validar hipótesis y generar recomendaciones accionables.
+- Diseño flujos analíticos de seguimiento para KPIs de revenue, pricing, performance comercial, comportamiento transaccional y rentabilidad.
+
+## Docente Principal de Especialidad en Fintech y Banca Digital impulsada por IA
+**GEM EDUCA** | *Junio 2026 – Actualidad* | *Lima, Perú*
+- Diseño y dicto sesiones especializadas sobre ecosistema fintech, transformación de la banca digital, modelos de negocio financieros y aplicación de inteligencia artificial en finanzas.
+- Explico flujos de pagos digitales e interoperables, incluyendo adquirencia, tokenización, pagos P2M, wallets, remesas, open banking y open finance.
+- Introduzco conceptos y fundamentos del estándar ISO 8583 aplicados al procesamiento de transacciones electrónicas y sistemas de pagos.
+- Desarrollo contenidos sobre inteligencia artificial aplicada a banca, fintech, pricing, automatización, riesgo, cumplimiento y analítica avanzada.
+- Elaboro marcos de especialización para comprender el ecosistema fintech desde una perspectiva estratégica, tecnológica y regulatoria.
+- Evalúo casos prácticos relacionados con riesgos, cumplimiento, fraude, experiencia del cliente, monetización y escalabilidad de productos financieros digitales.
+- Explico marcos teóricos de gobierno de datos bajo enfoques como DAMA-DMBOK, calidad de datos, linaje, ownership, catálogo de datos y gestión de información empresarial.
+- Integro herramientas de IA generativa como ChatGPT y Perplexity AI para investigación, benchmarking, diseño de casos, estructuración de contenidos y análisis estratégico.
+
+## Sr. BI & Pricing Analyst – Pricing
+**Yape - BCP** | *Julio 2025 – Actualidad* | *Lima, Perú*
+- Lidero el diseño y desarrollo de dashboards integrados para productos estratégicos como **Lending, Yape Market, Promos y Remesas**, consolidando métricas financieras, de adopción, rentabilidad y performance comercial.
+- Implementé el modelo de prepagos para el producto de créditos, incrementando la rentabilidad en **5%** y mejorando la precisión en la calificación de clientes.
+- Coordino con las áreas de Producto, Finanzas y Riesgos para la definición de estrategias de pricing, monitoreo de impacto y alineamiento de objetivos de negocio con resultados medibles.
+- Implementé pruebas **A/B testing** para pilotear un modelo de gamificación en Promos, evaluando el impacto sobre adopción, conversión y comportamiento de usuarios.
+- Desarrollé un modelo de análisis automatizado con inteligencia artificial en **Databricks**, estructurado mediante **JSON Prompting**, que integra KPIs clave de productos Yape y genera interpretaciones en lenguaje natural sobre el desempeño histórico.
+- Integré capacidades de IA generativa dentro de dashboards en **Sigma Computing**, facilitando la lectura ejecutiva de resultados, tendencias, alertas e insights accionables para equipos de negocio.
+- Elaboro análisis de pricing, rentabilidad, comportamiento transaccional y performance de productos para apoyar decisiones estratégicas en verticales financieras y comerciales.
+
+## Business Specialist of Data – Yape Empresa
+**Yape - BCP** | *Octubre 2024 – Mayo 2025* | *Lima, Perú*
+- Lideró un equipo de analistas para la elaboración, seguimiento y control de métricas de negocio para los productos de **Yape Empresa** y **Consumo Masivo**, consolidando información de clientes, transacciones, cohortes y rentabilidad.
+- Desarrollé reportes estratégicos para la gerencia de Yape y el directorio de Credicorp, proporcionando insights clave para la toma de decisiones estratégicas del negocio.
+- Diseñé workflows, pipelines y procesos ETL en **Databricks**, incrementando en más del **90%** la eficiencia del procesamiento y análisis de datos en el data lake, garantizando consistencia, trazabilidad y disponibilidad de información.
+- Realicé análisis avanzados de datos para la segmentación de clientes, identificación de oportunidades comerciales y desarrollo de modelos de propensión, apoyando estrategias de retención, crecimiento y monetización.
+- Diseñé y mantuve las capas **Gold** del modelo de datos, asegurando la integridad, disponibilidad y gobernanza de la información para análisis, dashboards y visualizaciones de alto impacto.
+- Coordinó con equipos de negocio, producto y data para traducir necesidades estratégicas en soluciones analíticas escalables, automatizadas y orientadas a resultados.
+
+---
+
+# Educación
+
+## Universidad Nacional Mayor de San Marcos
+**Licenciatura en Ingeniería de Sistemas** | *Lima, Perú* | *2018 – 2023*
+
+---
+
+# Herramientas y Tecnologías
+
+- **Lenguajes y Análisis:** Python (Machine Learning, Causalidad, Stats), SQL (Optimización, Modelamiento, Extract), VBA, DAX, Bash, Git.
+- **Visualización y Datos:** Power BI (Storytelling, Modelado dimensional), Sigma Computing (Dashboards), Databricks (Lakehouse, PySpark), Excel Avanzado.
+- **Automatización y Low-Code:** Power Apps, Power Automate.
+
+---
+
+# Certificaciones
+
+- **Academy Accreditation – Databricks Fundamentals** | Databricks (2025)
+- **Data Analytics with Python** | IBM - Coursera (2022)
+- **Power BI Specialist** | CEDHINFO (2022)
+- **SQL Specialist for Analytics** | CEDHINFO (2022)</textarea>
+
+  <script src="app.js"></script>
+</body>
+</html>
