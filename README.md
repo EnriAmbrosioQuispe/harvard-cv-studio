@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Harvard CV Studio 🎓
 
 **Harvard CV Studio** es una aplicación web interactiva diseñada para crear, estructurar y optimizar currículums (CV) siguiendo los estándares clásicos y profesionales de la Universidad de Harvard. Permite escribir en formato Markdown y exportar el resultado a un PDF perfectamente formateado y optimizado para sistemas de seguimiento de candidatos (ATS).
@@ -64,3 +65,7 @@ No se requieren instalaciones ni dependencias de servidor complejas. Puedes ejec
 ## 📄 Licencia
 
 Este proyecto es de código abierto. Siéntete libre de clonarlo, modificarlo y adaptarlo a tus necesidades.
+=======
+# harvard-cv-studio
+Proyecto de creación de CV bajo formato markdown.
+>>>>>>> 85b1a2cb98c510850a2d6d3102dfe657e8d6a272
