@@ -197,7 +197,26 @@ document.addEventListener('DOMContentLoaded', () => {
   // REAL-TIME ATS SCORE CARD & METRICS
   // ==========================================================================
   function runATSCheck(markdownText) {
-    const textLower = markdownText.toLowerCase();
+    const trimmedText = markdownText.trim();
+    
+    // Guard clause for empty/blank content
+    if (trimmedText.length < 10) {
+      scoreNum.textContent = '0%';
+      scoreBar.style.strokeDasharray = '0, 100';
+      scoreBar.style.stroke = 'var(--danger-color)';
+      wordCountLabel.textContent = '0 palabras';
+      
+      checklistElement.innerHTML = `
+        <li class="ats-item failed">
+          <i data-lucide="x-circle"></i>
+          <span>Escribe contenido en el editor para iniciar el análisis</span>
+        </li>
+      `;
+      lucide.createIcons();
+      return;
+    }
+
+    const textLower = trimmedText.toLowerCase();
     let score = 0;
     const items = [];
 
@@ -439,21 +458,41 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==========================================================================
   
   // File Import handler
-  btnImport.addEventListener('click', () => {
+  btnImport.addEventListener('click', (e) => {
+    e.preventDefault();
     fileInput.click();
   });
 
   fileInput.addEventListener('change', (e) => {
     const file = e.target.files[0];
-    if (!file) return;
-
+    if (!file) {
+      console.log("No file selected.");
+      return;
+    }
+    
+    console.log("Importing file:", file.name, "Size:", file.size, "Type:", file.type);
+    
     const reader = new FileReader();
     reader.onload = (evt) => {
-      editor.value = evt.target.result;
-      parseAndRenderCV(editor.value);
-      runATSCheck(editor.value);
+      const textContent = evt.target.result;
+      console.log("File loaded successfully into memory. Length:", textContent.length);
+      
+      // Update editor text area
+      editor.value = textContent;
+      
+      // Force instant parsing and ATS check
+      parseAndRenderCV(textContent);
+      runATSCheck(textContent);
+      
+      // Clear file input value so selecting the same file again triggers change event
+      fileInput.value = '';
     };
-    reader.readAsText(file);
+    reader.onerror = (evt) => {
+      console.error("Error reading file:", evt);
+      alert("Error al leer el archivo. Verifique la codificación.");
+      fileInput.value = '';
+    };
+    reader.readAsText(file, "UTF-8");
   });
 
   // Markdown download
