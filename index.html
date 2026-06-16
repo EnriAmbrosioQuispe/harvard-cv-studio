@@ -138,13 +138,44 @@
       <section class="editor-pane">
         <div class="pane-header">
           <div class="title-with-status">
-            <i data-lucide="edit-3"></i>
+            <button id="btn-toggle-sidebar" class="btn-icon-toggle" title="Ocultar panel de ajustes" style="margin-right: 6px;">
+              <i data-lucide="sidebar"></i>
+            </button>
             <h2>Editor Markdown</h2>
           </div>
           <span class="word-counter" id="word-count">0 palabras</span>
         </div>
         <div class="editor-wrapper">
-          <textarea id="markdown-editor" spellcheck="false" placeholder="Escribe o pega tu CV aquí en formato Markdown..."></textarea>
+          <textarea id="markdown-editor" spellcheck="false" placeholder="# TU NOMBRE Y APELLIDO
+
+**Teléfono:** +51 XXX XXX XXX | **Correo:** tuemail@ejemplo.com | **LinkedIn:** linkedin.com/in/tu-usuario | **Portafolio:** tu-web.com
+
+---
+
+# Perfil Profesional
+Escribe aquí una breve descripción sobre ti, tus especialidades, tecnologías clave y logros más significativos.
+
+---
+
+# Experiencia Laboral
+
+## Tu Cargo o Puesto de Trabajo
+**Nombre de la Empresa** | *Mes Año – Mes Año* | *Ciudad, País*
+- Describe un logro importante usando verbos de acción y métricas (ej. Lideré el equipo... con impacto de $1.2M).
+- Describe tu segunda responsabilidad o logro utilizando datos cuantificables.
+
+---
+
+# Educación
+
+## Universidad Nacional Mayor de San Marcos
+**Licenciatura en Ingeniería de Sistemas** | *2018 – 2023* | *Lima, Perú*
+
+---
+
+# Herramientas y Habilidades
+- **Lenguajes:** Python (Avanzado), SQL, JavaScript.
+- **Visualización:** Power BI, Databricks."></textarea>
         </div>
       </section>
 

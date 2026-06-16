@@ -27,6 +27,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnExportMd = document.getElementById('btn-export-md');
   const btnPrint = document.getElementById('btn-print');
   const btnTogglePreview = document.getElementById('btn-toggle-preview-only');
+  const btnToggleSidebar = document.getElementById('btn-toggle-sidebar');
+  const sidebar = document.querySelector('.sidebar');
   const appContainer = document.querySelector('.app-container');
   
   // Word Count & ATS Elements
@@ -496,6 +498,23 @@ document.addEventListener('DOMContentLoaded', () => {
     // Rebuild icons
     lucide.createIcons();
     setTimeout(updatePageBreaks, 100);
+  });
+
+  // Toggle sidebar panel visibility (collapsible menu)
+  btnToggleSidebar.addEventListener('click', () => {
+    sidebar.classList.toggle('collapsed');
+    const isCollapsed = sidebar.classList.contains('collapsed');
+    
+    // Update button tooltip title
+    if (isCollapsed) {
+      btnToggleSidebar.title = "Mostrar panel de ajustes";
+      btnToggleSidebar.classList.add('collapsed-active');
+    } else {
+      btnToggleSidebar.title = "Ocultar panel de ajustes";
+      btnToggleSidebar.classList.remove('collapsed-active');
+    }
+    
+    setTimeout(updatePageBreaks, 350); // Wait for sliding CSS animation to finish
   });
 
   // ==========================================================================
